@@ -38,6 +38,25 @@ SortedArray<DT>::SortedArray(int size){
 }
 
 template<class DT>
+int SortedArray<DT>::find(DT& lookFor){
+    int low = 0;
+    int high = numElements;
+    while(low <= high){
+        int mid = (low + high)/2;
+        if(elements[mid] == lookFor){
+            return mid;
+        }
+        if(elements[mid] > lookFor){
+            high = mid - 1;
+        }
+        if(elements[mid] < lookFor){
+            low = mid + 1;
+        }
+    }
+    return -1;
+}
+
+template<class DT>
 int SortedArray<DT>::insert(DT& newElement){
     if(numElements == arraySize){
         return -1;
@@ -55,20 +74,7 @@ int SortedArray<DT>::insert(DT& newElement){
         elements[j+1] = cur;
     }
 
-    int low = 0;
-    int high = numElements;
-    while(low <= high){
-        int mid = (low + high)/2;
-        if(elements[mid] == newElement){
-            return mid;
-        }
-        if(elements[mid] > newElement){
-            high = mid - 1;
-        }
-        if(elements[mid] < newElement){
-            low = mid + 1;
-        }
-    }
+    return find(newElement);
     
 
 
@@ -143,25 +149,24 @@ int SortedArray<DT>::insert(DT& newElement){
 
 template<class DT>
 int SortedArray<DT>::remove(DT& oldElement){
-    int index;
-    int low = 0;
-    int high = arraySize;
-    while(low <= high){
-        int mid = (low + high)/2;
-        if(elements[mid] == oldElement){
-            index = mid;
-            low = high + 1;
-            elements[mid] = NULL;
-            --numElements;
-            cout << "FOUND" << endl;
-        } else if(elements[mid] < oldElement) {
-            low = mid + 1;
-        } else {
-            high = mid - 1;
-        }
+    int index = find(oldElement);
+    if(index == -1){
+        return index;
     }
 
-    return index;
+    int* tempArray = new int[arraySize];
+    for(int i = 0; i < numElements; ++i){
+        if(i < index){
+            tempArray[i] = elements[i];
+        }
+        if(i > index){
+            tempArray[i - 1] = elements[i];
+        }
+    }
+    elements = tempArray;
+
+    --numElements;
+    return numElements;
 }
 
 template<class DT>
@@ -180,32 +185,39 @@ void SortedArray<DT>::print(){
 }
 
 int main(){
-    SortedArray<int>* newArray = new SortedArray<int>(5);
+    SortedArray<int>* newArray = new SortedArray<int>(8);
 
-    int val = 6;
-    int temp = newArray->insert(val);
-    cout << "*" << temp << endl;
+    for(int i = 5; i > 0; --i){
+        newArray->insert(i);
+    }
 
-    val = 4;
-    temp = newArray->insert(val);
-    cout << "*" << temp << endl;    
-
-    val = 1;
-    temp = newArray->insert(val);
-    cout << "*" << temp << endl;        
-
-    val = 5;
-    temp = newArray->insert(val);
-    cout << "*" << temp << endl;
+    int val = 0;
+    newArray->insert(val);
 
     val = 7;
-    temp = newArray->insert(val);
-    cout << "*" << temp << endl;
+    newArray->insert(val);
 
-    val = 8;
-    temp = newArray->insert(val);
-    cout << "*" << temp << endl;                  
+    val = 6;
+    newArray->insert(val);
 
-    newArray->print();
+    newArray->print(); 
+
+    val = 3;
+    int num = newArray->remove(val);  
+    newArray->print();  
+    cout << "*" << num << endl;
+    cout << "---------------------" << endl;
+
+    val = 0;
+    num = newArray->remove(val);  
+    newArray->print();  
+    cout << "*" << num << endl;
+    cout << "---------------------" << endl;
+
+    val = 7;
+    num = newArray->remove(val);  
+    newArray->print();  
+    cout << "*" << num << endl;
+    cout << "---------------------" << endl;    
 
 };
