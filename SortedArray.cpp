@@ -39,9 +39,11 @@ SortedArray<DT>::SortedArray(int size){
 
 template<class DT>
 int SortedArray<DT>::insert(DT& newElement){
+    if(numElements == arraySize){
+        return -1;
+    }
     elements[numElements] = newElement;
     ++numElements;
-
 
     for(int i = 1; i < numElements; ++i){
         int cur = elements[i];
@@ -198,7 +200,11 @@ int main(){
 
     val = 7;
     temp = newArray->insert(val);
-    cout << "*" << temp << endl;            
+    cout << "*" << temp << endl;
+
+    val = 8;
+    temp = newArray->insert(val);
+    cout << "*" << temp << endl;                  
 
     newArray->print();
 
