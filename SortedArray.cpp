@@ -13,8 +13,8 @@ public:
     SortedArray();
     SortedArray(int size);
     int find(DT& lookFor);
-    // int insert(DT& newElement);
-    int insert(DT& newElement, int location);
+    int insert(DT& newElement);
+    // int insert(DT& newElement, int location);
     int remove(DT& oldElement);
     SortedArray split(int i);
     DT* operator[](int index);
@@ -37,62 +37,106 @@ SortedArray<DT>::SortedArray(int size){
 }
 
 template<class DT>
-int SortedArray<DT>::insert(DT& newElement, int location){
-    elements[location] = newElement;
-}
-
-template<class DT>
-int SortedArray<DT>::remove(DT& oldElement){
-    DT* newElements = new DT[(arraySize - 1)];
+int SortedArray<DT>::insert(DT& newElement){
+    DT* tempElements = new DT[arraySize];
     int index;
     int low = 0;
     int high = arraySize;
     while(low <= high){
         int mid = (low + high)/2;
-        // cout << mid << endl;
-        if(elements[mid] == oldElement){
+        if(elements[mid] == NULL){
+            high = mid - 1;
+            if(mid == 0 && elements[mid] == NULL){
+                index = 0;
+                low = high + 1;
+            }
+        } else if(elements[mid] < newElement && (elements[mid + 1] > newElement || elements[mid + 1] == NULL)){
+            if(elements[mid + 1] == NULL){
+                index = mid + 1;
+            } else {
+                index = mid;
+            }
+            low = high + 1;
+        } else if(elements[mid] < newElement){
+            low = mid + 1;
+        } else if(elements[mid] > newElement && (elements[mid - 1] < newElement || elements[mid - 1] == NULL)){
             index = mid;
             low = high + 1;
-            // cout << "FOUND" << endl;
-        } else if(elements[mid] < oldElement) {
-            low = mid + 1;
-            // cout << "Smaller" << endl;
-        } else {
+        } else if(elements[mid] > newElement){
             high = mid - 1;
-            // cout << "Larger" << endl;
-        }
-    }
-    
-    for(int i = 0; i < arraySize; ++i){
-        if(i < index){
-            newElements[i] = elements[i];
-        } else if(i > index){
-            newElements[i - 1] = elements[i];
         }
     }
 
-    arraySize = arraySize - 1;
-    elements = newElements;
+    // cout << "Index: " << index;
+
+    for(int i = 0; i < arraySize; ++i){
+        if(i < index){
+            tempElements[i] = elements[i];
+        }
+        if(i == index){
+            tempElements[i] = newElement;
+        }
+        if(i > index){
+            tempElements[i] = elements[i - 1]; 
+        }
+    }
+    elements = tempElements;
+
+    return index;
+}
+
+template<class DT>
+int SortedArray<DT>::remove(DT& oldElement){
+    int index;
+    int low = 0;
+    int high = arraySize;
+    while(low <= high){
+        int mid = (low + high)/2;
+        if(elements[mid] == oldElement){
+            index = mid;
+            low = high + 1;
+            elements[mid] = NULL;
+            --numElements;
+            cout << "FOUND" << endl;
+        } else if(elements[mid] < oldElement) {
+            low = mid + 1;
+        } else {
+            high = mid - 1;
+        }
+    }
+
+    return index;
 }
 
 template<class DT>
 void SortedArray<DT>::print(){
     for(int i = 0; i < arraySize; ++i){
-        cout << "{" << i << "," << elements[i] << "}" << endl;
+        if(elements[i] != NULL){
+            cout << "{" << i << "," << elements[i] << "}" << endl;
+        } else {
+            cout << "At least one null" << endl;
+        }
     }
 }
 
 int main(){
     SortedArray<int>* newArray = new SortedArray<int>(5);
-    for(int i = 0; i < 5; ++i){
-        int val = i + 10;
-        newArray->insert(val ,i);
-    }
 
-    int elem = 12;
-    newArray->remove(elem);
-    elem = 10;
-    newArray->remove(elem);
+    int val = 1;
+    int temp = newArray->insert(val);
+    cout << temp << endl;
+
+    val = 6;
+    temp = newArray->insert(val);
+    cout << temp << endl;
+
+    val = 4;
+    temp = newArray->insert(val);
+    cout << temp << endl;
+
+    val = 2;
+    temp = newArray->insert(val);
+    cout << temp << endl;
 
     newArray->print();
 
