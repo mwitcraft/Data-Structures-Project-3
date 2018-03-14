@@ -17,7 +17,7 @@ public:
     // int insert(DT& newElement, int location);
     int remove(DT& oldElement);
     SortedArray<DT>* split(int i);
-    DT* operator[](int index);
+    DT& operator[](int index);
     int operator=(SortedArray arr);
     bool operator>(SortedArray arr);
     bool operator<(SortedArray arr);
@@ -181,17 +181,33 @@ SortedArray<DT>* SortedArray<DT>::split(int splitAt){
     }
     numElements = splitAt;
 
-
-    // for(int i = splitAt; i < arraySize; ++i){
-    //     splitArray->insert(elements[i]);
-    //     oldElements[i] = NULL;
-    // }
-
-    // elements = oldElements;
-    // numElements = splitAt;
-
     return splitArray;
 }
+
+template<class DT>
+DT& SortedArray<DT>::operator[](int index){
+    return elements[index];
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 template<class DT>
 void SortedArray<DT>::print(){
@@ -217,12 +233,7 @@ int main(){
 
     newArray->print();
 
-    SortedArray<int>* split;
-    split = newArray->split(2);
+    int x = (*newArray)[2];
+    cout << x << endl;
 
-    cout << "newArray: ";
-    newArray->print();
-
-    cout << "split: ";
-    split->print();
 };
