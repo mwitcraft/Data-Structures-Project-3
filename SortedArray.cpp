@@ -173,16 +173,22 @@ template<class DT>
 SortedArray<DT>* SortedArray<DT>::split(int splitAt){
     int* oldElements = new int[arraySize];
     SortedArray<DT>* splitArray = new SortedArray(arraySize);
-    for(int i = 0; i < splitAt; ++i){
-        oldElements[i] = elements[i];
+    for(int i = 0; i < arraySize; ++i){
+        if(i >= splitAt){
+            splitArray->insert(elements[i]);
+            elements[i] = NULL;
+        }
     }
-    for(int i = splitAt; i < arraySize; ++i){
-        splitArray->insert(elements[i]);
-        oldElements[i] = NULL;
-    }
-
-    elements = oldElements;
     numElements = splitAt;
+
+
+    // for(int i = splitAt; i < arraySize; ++i){
+    //     splitArray->insert(elements[i]);
+    //     oldElements[i] = NULL;
+    // }
+
+    // elements = oldElements;
+    // numElements = splitAt;
 
     return splitArray;
 }
@@ -212,7 +218,7 @@ int main(){
     newArray->print();
 
     SortedArray<int>* split;
-    split = newArray->split(5);
+    split = newArray->split(2);
 
     cout << "newArray: ";
     newArray->print();
