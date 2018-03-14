@@ -16,7 +16,7 @@ public:
     int insert(DT& newElement);
     // int insert(DT& newElement, int location);
     int remove(DT& oldElement);
-    SortedArray split(int i);
+    SortedArray<DT>* split(int i);
     DT* operator[](int index);
     int operator=(SortedArray arr);
     bool operator>(SortedArray arr);
@@ -170,6 +170,24 @@ int SortedArray<DT>::remove(DT& oldElement){
 }
 
 template<class DT>
+SortedArray<DT>* SortedArray<DT>::split(int splitAt){
+    int* oldElements = new int[arraySize];
+    SortedArray<DT>* splitArray = new SortedArray(arraySize);
+    for(int i = 0; i < splitAt; ++i){
+        oldElements[i] = elements[i];
+    }
+    for(int i = splitAt; i < arraySize; ++i){
+        splitArray->insert(elements[i]);
+        oldElements[i] = NULL;
+    }
+
+    elements = oldElements;
+    numElements = splitAt;
+
+    return splitArray;
+}
+
+template<class DT>
 void SortedArray<DT>::print(){
     // for(int i = 0; i < arraySize; ++i){
     //     if(elements[i] != NULL){
@@ -185,39 +203,20 @@ void SortedArray<DT>::print(){
 }
 
 int main(){
-    SortedArray<int>* newArray = new SortedArray<int>(8);
+    SortedArray<int>* newArray = new SortedArray<int>(5);
 
     for(int i = 5; i > 0; --i){
         newArray->insert(i);
     }
 
-    int val = 0;
-    newArray->insert(val);
+    newArray->print();
 
-    val = 7;
-    newArray->insert(val);
+    SortedArray<int>* split;
+    split = newArray->split(5);
 
-    val = 6;
-    newArray->insert(val);
+    cout << "newArray: ";
+    newArray->print();
 
-    newArray->print(); 
-
-    val = 3;
-    int num = newArray->remove(val);  
-    newArray->print();  
-    cout << "*" << num << endl;
-    cout << "---------------------" << endl;
-
-    val = 0;
-    num = newArray->remove(val);  
-    newArray->print();  
-    cout << "*" << num << endl;
-    cout << "---------------------" << endl;
-
-    val = 7;
-    num = newArray->remove(val);  
-    newArray->print();  
-    cout << "*" << num << endl;
-    cout << "---------------------" << endl;    
-
+    cout << "split: ";
+    split->print();
 };
