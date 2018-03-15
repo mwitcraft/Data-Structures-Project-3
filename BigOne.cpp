@@ -1,5 +1,5 @@
 #include <iostream>
-// #include "SortedArray.h"
+#include <list>
 using namespace std;
 
 template <class DT>
@@ -131,14 +131,11 @@ SortedArray<DT>* SortedArray<DT>::split(int splitAt){
     }
     numElements = splitAt;
 
+    minElement = elements[0];
+    maxElement = elements[numElements - 1];
+
     return splitArray;
 }
-
-//***************************************************************************************************
-//***************************************************************************************************
-//***************************************************************************************************
-//***************************************************************************************************
-//***************************************************************************************************
 
 template <class DT>
 void SortedArray<DT>::join(SortedArray<DT>& arr){
@@ -146,16 +143,6 @@ void SortedArray<DT>::join(SortedArray<DT>& arr){
         this->insert(arr[i]);
     }
 }
-
-
-
-
-
-//***************************************************************************************************
-//***************************************************************************************************
-//***************************************************************************************************
-//***************************************************************************************************
-//***************************************************************************************************
 
 template<class DT>
 DT& SortedArray<DT>::operator[](int index){
@@ -170,29 +157,79 @@ void SortedArray<DT>::print(){
     cout << endl;
 }
 
-int main(){
-    SortedArray<int>* newArray = new SortedArray<int>(10);
+template <class DT>
+SortedArray<DT>::~SortedArray(){
+    delete elements;
+}
 
-    for(int i = 5; i > 0; --i){
-        newArray->insert(i);
-    }
+//***************************************************************************************************
+//***************************************************************************************************
+//***************************************************************************************************
+//***************************************************************************************************
+//***************************************************************************************************
 
-    SortedArray<int>* myArray = new SortedArray<int>(10);
-    for(int i = 6; i < 11; ++i){
-        myArray->insert(i);
-    }
-
-    cout << "NewArray: ";
-    newArray->print();
-    cout << endl;
-
-    cout << "MyArray: ";
-    myArray->print();
-    cout << endl;
-
-    myArray->join(*newArray);
-
-    cout << "New MyArray: ";
-    myArray->print();
-    cout << endl;
+template <class T>
+class LinkedSortedArrays{
+protected:
+    list<SortedArray<T>> linkedArrays;
+    int arraySizeFactor;
+public:
+    LinkedSortedArrays();
+    LinkedSortedArrays(SortedArray<T> array);
+    int addArray(SortedArray<T>* array);
+    int find(const T& lookFor);
+    int insert(const T& newElement);
+    int remove(const T& oldElement);
 };
+
+template <class T>
+LinkedSortedArrays<T>::LinkedSortedArrays(){
+    linkedArrays = list<SortedArray<T>>();
+}
+
+template <class T>
+int LinkedSortedArrays<T>::addArray(SortedArray<T>* array){
+    linkedArrays.push_back(*array);
+    cout << "Array: ";
+    linkedArrays.front().print();
+}
+
+template <class T>
+int LinkedSortedArrays<T>::find(const T& lookFor){
+    // cout << "Min: " << linkedArrays.front().getMin() << endl;
+    // cout << "Max: " << linkedArrays.back().getMax() << endl;
+
+    if(linkedArrays.front().getMin() > lookFor || linkedArrays.back().getMax() < lookFor){
+        return -1;
+    } else {
+        typename list<SortedArray<T>>::iterator it;
+        for(it = linkedArrays.begin(); it != linkedArrays.end(); ++it){
+            SortedArray<int> s = *it;
+            s.print();
+        }
+        
+    }
+}
+
+
+
+//***************************************************************************************************
+//***************************************************************************************************
+//***************************************************************************************************
+//***************************************************************************************************
+//***************************************************************************************************
+
+int main(){
+    LinkedSortedArrays<int>* lsArray = new LinkedSortedArrays<int>();
+    SortedArray<int>* sArray;
+
+    sArray = new SortedArray<int>(4);
+
+    for(int i = 1; i < 5; ++i){
+        sArray->insert(i);
+    }
+
+    lsArray->addArray(sArray);
+
+    cout << "*" << lsArray->find(2) << endl;
+}

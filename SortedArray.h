@@ -15,19 +15,15 @@ public:
     SortedArray(int size);
     int find(DT& lookFor);
     int insert(DT& newElement);
+    // int insert(DT& newElement, int location);
     int remove(DT& oldElement);
     SortedArray<DT>* split(int i);
-    void join(SortedArray<DT>& arr);
     DT& operator[](int index);
     int operator=(SortedArray arr);
     bool operator>(SortedArray arr);
     bool operator<(SortedArray arr);
     bool operator==(SortedArray arr);
     ~SortedArray();
-
-    int getNumElements(){
-        return numElements;
-    }
 
     int getMax(){
         return maxElement;
@@ -93,6 +89,76 @@ int SortedArray<DT>::insert(DT& newElement){
     maxElement = elements[numElements - 1];
 
     return find(newElement);
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // DT* tempElements = new DT[arraySize];
+    // int index;
+    // int low = 0;
+    // int high = arraySize;
+    // while(low <= high){
+    //     int mid = (low + high)/2;
+    //     if(elements[mid] == NULL){
+    //         high = mid - 1;
+    //         if(mid == 0 && elements[mid] == NULL){
+    //             index = 0;
+    //             low = high + 1;
+    //         }
+    //     } else if(elements[mid] < newElement && (elements[mid + 1] > newElement || elements[mid + 1] == NULL)){
+    //         if(elements[mid + 1] == NULL){
+    //             index = mid + 1;
+    //         } else {
+    //             index = mid;
+    //         }
+    //         low = high + 1;
+    //     } else if(elements[mid] < newElement){
+    //         low = mid + 1;
+    //     } else if(elements[mid] > newElement && (elements[mid - 1] < newElement || elements[mid - 1] == NULL)){
+    //         index = mid;
+    //         low = high + 1;
+    //     } else if(elements[mid] > newElement){
+    //         high = mid - 1;
+    //     }
+    // }
+
+    // // cout << "Index: " << index;
+
+    // for(int i = 0; i < arraySize; ++i){
+    //     if(i < index){
+    //         tempElements[i] = elements[i];
+    //     }
+    //     if(i == index){
+    //         tempElements[i] = newElement;
+    //     }
+    //     if(i > index){
+    //         tempElements[i] = elements[i - 1]; 
+    //     }
+    // }
+    // elements = tempElements;
+
+    // return index;
 }
 
 template<class DT>
@@ -134,29 +200,6 @@ SortedArray<DT>* SortedArray<DT>::split(int splitAt){
     return splitArray;
 }
 
-//***************************************************************************************************
-//***************************************************************************************************
-//***************************************************************************************************
-//***************************************************************************************************
-//***************************************************************************************************
-
-template <class DT>
-void SortedArray<DT>::join(SortedArray<DT>& arr){
-    for(int i = 0; i < arr.getNumElements(); ++i){
-        this->insert(arr[i]);
-    }
-}
-
-
-
-
-
-//***************************************************************************************************
-//***************************************************************************************************
-//***************************************************************************************************
-//***************************************************************************************************
-//***************************************************************************************************
-
 template<class DT>
 DT& SortedArray<DT>::operator[](int index){
     return elements[index];
@@ -164,35 +207,25 @@ DT& SortedArray<DT>::operator[](int index){
 
 template<class DT>
 void SortedArray<DT>::print(){
+    // for(int i = 0; i < arraySize; ++i){
+    //     if(elements[i] != NULL){
+    //         cout << "{" << i << "," << elements[i] << "}" << endl;
+    //     } else {
+    //         cout << "At least one null" << endl;
+    //     }
+    // }
     for(int i = 0; i < numElements; ++i){
         cout << elements[i] << " ";
     }
     cout << endl;
 }
 
-int main(){
-    SortedArray<int>* newArray = new SortedArray<int>(10);
+// int main(){
+//     SortedArray<int>* newArray = new SortedArray<int>(5);
 
-    for(int i = 5; i > 0; --i){
-        newArray->insert(i);
-    }
+//     for(int i = 5; i > 0; --i){
+//         newArray->insert(i);
+//     }
 
-    SortedArray<int>* myArray = new SortedArray<int>(10);
-    for(int i = 6; i < 11; ++i){
-        myArray->insert(i);
-    }
-
-    cout << "NewArray: ";
-    newArray->print();
-    cout << endl;
-
-    cout << "MyArray: ";
-    myArray->print();
-    cout << endl;
-
-    myArray->join(*newArray);
-
-    cout << "New MyArray: ";
-    myArray->print();
-    cout << endl;
-};
+//     newArray->print();
+// };
