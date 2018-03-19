@@ -13,16 +13,21 @@ private:
 public:
     SortedArray();
     SortedArray(int size);
-    int find(DT& lookFor);
-    int insert(DT& newElement);
+    int find(const DT& lookFor);
+    int insert(const DT& newElement);
     int remove(DT& oldElement);
     SortedArray<DT>* split(int i);
-    void join(SortedArray<DT>& arr);
+    SortedArray<DT>* join(SortedArray<DT>& arr);
     DT& operator[](int index);
     int operator=(SortedArray arr);
-    bool operator>(SortedArray arr);
-    bool operator<(SortedArray arr);
-    bool operator==(SortedArray arr);
+    template<class T>
+    friend bool operator>(SortedArray<T> arr1, SortedArray<T> arr2);
+    template<class T>
+    friend bool operator<(SortedArray<T> arr1, SortedArray<T> arr2);
+    template<class T>
+    friend bool operator==(SortedArray<T> arr1, SortedArray<T> arr2);
+    template<class T>
+    friend ostream& operator<<(ostream& os, SortedArray<T>* arr);
     ~SortedArray();
 
     int getNumElements(){
@@ -35,6 +40,10 @@ public:
 
     int getMin(){
         return minElement;
+    }
+
+    DT* getElements(){
+        return elements;
     }
 
     void print();
@@ -53,7 +62,7 @@ SortedArray<DT>::SortedArray(int size){
 }
 
 template<class DT>
-int SortedArray<DT>::find(DT& lookFor){
+int SortedArray<DT>::find(const DT& lookFor){
     int low = 0;
     int high = numElements;
     while(low <= high){
@@ -72,7 +81,7 @@ int SortedArray<DT>::find(DT& lookFor){
 }
 
 template<class DT>
-int SortedArray<DT>::insert(DT& newElement){
+int SortedArray<DT>::insert(const DT& newElement){
     if(numElements == arraySize){
         return -1;
     }
@@ -91,6 +100,15 @@ int SortedArray<DT>::insert(DT& newElement){
 
     minElement = elements[0];
     maxElement = elements[numElements - 1];
+
+    // cout << "Elements: ";
+
+    // for(int i = 0; i < numElements; ++i){
+    //     cout << elements[i] << " ";
+    // }
+
+    // cout << endl;
+    
 
     return find(newElement);
 }
@@ -141,14 +159,57 @@ SortedArray<DT>* SortedArray<DT>::split(int splitAt){
 //***************************************************************************************************
 
 template <class DT>
-void SortedArray<DT>::join(SortedArray<DT>& arr){
-    for(int i = 0; i < arr.getNumElements(); ++i){
-        this->insert(arr[i]);
+SortedArray<DT>* SortedArray<DT>::join(SortedArray<DT>& arr){
+    SortedArray<DT>* joinerArr = new SortedArray<DT>(arraySize);
+    for(int i = numElements; i < arraySize; ++i){
+        elements[i] = arr[i - numElements];
     }
+
+    for(int i = numElements; i < arr.getNumElements(); ++i){
+        joinerArr->insert(arr[i]);
+    }
+
+    numElements = arraySize;
+    return joinerArr;
 }
 
+template<class T>
+bool operator>(SortedArray<T> arr1, SortedArray<T> arr2){
+    return arr1.maxElement > arr2.maxElement;
+}
 
+template<class T>
+bool operator<(SortedArray<T> arr1, SortedArray<T> arr2){
+    return arr1.minElement < arr2.minElement;
+}
 
+template<class T>
+bool operator==(SortedArray<T> arr1, SortedArray<T> arr2){
+    if(arr1.numElements == arr2.numElements){
+        for(int i = 0; i < arr1.numElements; ++i){
+            if(arr1[i] != arr2[i]){
+                return false;
+            }
+        }
+    } else {
+        return false;
+    }
+
+    return true;
+}
+
+template<class T>
+ostream& operator<<(ostream& os, SortedArray<T>* arr){
+    for(int i = 0; i < arr->numElements; ++i){
+        os << arr->elements[i] << " ";
+    }
+    return os;
+} 
+
+template<class DT>
+SortedArray<DT>::~SortedArray(){
+
+}
 
 
 //***************************************************************************************************
@@ -171,28 +232,19 @@ void SortedArray<DT>::print(){
 }
 
 int main(){
-    SortedArray<int>* newArray = new SortedArray<int>(10);
+    SortedArray<int>* arr = new SortedArray<int>(4);
+    arr->insert(3);
+    // arr->insert(2);
+    arr->insert(4);
+    arr->insert(1);
 
-    for(int i = 5; i > 0; --i){
-        newArray->insert(i);
-    }
+    cout << arr << endl;
 
-    SortedArray<int>* myArray = new SortedArray<int>(10);
-    for(int i = 6; i < 11; ++i){
-        myArray->insert(i);
-    }
+    arr->insert(2);
 
-    cout << "NewArray: ";
-    newArray->print();
-    cout << endl;
+    cout << arr << endl;
+    cout << arr << endl;
+    cout << arr << endl;
 
-    cout << "MyArray: ";
-    myArray->print();
-    cout << endl;
 
-    myArray->join(*newArray);
-
-    cout << "New MyArray: ";
-    myArray->print();
-    cout << endl;
 };
